@@ -17,7 +17,7 @@ limitations under the License.
 package s3
 
 import (
-	csi "github.com/container-storage-interface/spec/lib/go/csi"
+	csi "github.com/woodliu/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 
 	csicommon "github.com/kubernetes-csi/drivers/pkg/csi-common"
