@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5d9e4f6b-48db-4267-bd14-e23b7bf72c45" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/s3driver/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/s3driver/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/kubernetes/storageclass.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/kubernetes/storageclass.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/s3/controllerserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/s3/controllerserver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/s3/nodeserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/s3/nodeserver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/s3/s3-client.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/s3/s3-client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/s3/s3-driver.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/s3/s3-driver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/test.sh" afterDir="false" />
-    </list>
+    <list default="true" id="5d9e4f6b-48db-4267-bd14-e23b7bf72c45" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
