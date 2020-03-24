@@ -7,12 +7,11 @@ provisioner: ch.ctrox.csi.s3-driver
 parameters:
   # specify which mounter to use
   # can be set to rclone, s3fs, goofys or s3backer
-  mounter: rclone
-  csi.storage.k8s.io/provisioner-secret-name: csi-s3-secret
-  csi.storage.k8s.io/provisioner-secret-namespace: kube-system
-  csi.storage.k8s.io/controller-publish-secret-name: csi-s3-secret
-  csi.storage.k8s.io/controller-publish-secret-namespace: kube-system
-  csi.storage.k8s.io/node-stage-secret-name: csi-s3-secret
-  csi.storage.k8s.io/node-stage-secret-namespace: kube-system
-  csi.storage.k8s.io/node-publish-secret-name: csi-s3-secret
-  csi.storage.k8s.io/node-publish-secret-namespace: kube-system
+  csiProvisionerSecretName: csi-s3-secret
+  csiProvisionerSecretNamespace: kube-system
+  csiControllerPublishSecretName: csi-s3-secret
+  csiControllerPublishSecretNamespace: kube-system
+  csiNodeStageSecretName: csi-s3-secret
+  csiNodeStageSecretNamespace: kube-system
+  csiNodePublishSecretName: csi-s3-secret
+  csiNodePublishSecretNamespace: kube-system

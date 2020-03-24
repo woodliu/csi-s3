@@ -63,29 +63,38 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	}
 
 	deviceID := ""
-	if req.GetPublishContext() != nil {
-		deviceID = req.GetPublishContext()[deviceID]
+	if req.GetPublishInfo() != nil {
+		deviceID = req.GetPublishInfo()[deviceID]
 	}
 
 	// TODO: Implement readOnly & mountFlags
 	readOnly := req.GetReadonly()
 	// TODO: check if attrib is correct with context.
-	attrib := req.GetVolumeContext()
+	attrib := req.GetVolumeAttributes()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
 	glog.V(4).Infof("target %v\ndevice %v\nreadonly %v\nvolumeId %v\nattributes %v\nmountflags %v\n",
 		targetPath, deviceID, readOnly, volumeID, attrib, mountFlags)
 
-	s3, err := newS3ClientFromSecrets(req.GetSecrets())
+	s3, err := newS3ClientFromSecrets(req.GetNodePublishSecrets())
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
 	}
+
+	// We just use s3fsMounterType
+	bucketCommon := bucket{}
+	bucketCommon.Name = volumeID
+	bucketCommon.FSPath = fsPrefix
+	bucketCommon.Mounter = s3fsMounterType
+
+	/*
 	b, err := s3.getBucket(volumeID)
 	if err != nil {
 		return nil, err
 	}
+*/
 
-	mounter, err := newMounter(b, s3.cfg)
+	mounter, err := newMounter(&bucketCommon, s3.cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +102,7 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, err
 	}
 
-	glog.V(4).Infof("s3: bucket %s successfuly mounted to %s", b.Name, targetPath)
+	glog.V(4).Infof("s3: bucket %s successfuly mounted to %s", bucketCommon.Name, targetPath)
 
 	return &csi.NodePublishVolumeResponse{}, nil
 }
@@ -142,15 +151,23 @@ func (ns *nodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	if !notMnt {
 		return &csi.NodeStageVolumeResponse{}, nil
 	}
-	s3, err := newS3ClientFromSecrets(req.GetSecrets())
+	s3, err := newS3ClientFromSecrets(req.GetNodeStageSecrets())
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
 	}
+
+	bucketCommon := bucket{}
+	bucketCommon.Name = volumeID
+	bucketCommon.FSPath = fsPrefix
+	bucketCommon.Mounter = s3fsMounterType
+	/*
 	b, err := s3.getBucket(volumeID)
 	if err != nil {
 		return nil, err
 	}
-	mounter, err := newMounter(b, s3.cfg)
+	*/
+
+	mounter, err := newMounter(&bucketCommon, s3.cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +211,13 @@ func (ns *nodeServer) NodeGetCapabilities(ctx context.Context, req *csi.NodeGetC
 	}, nil
 }
 
-func (ns *nodeServer) NodeExpandVolume(ctx context.Context, req *csi.NodeExpandVolumeRequest) (*csi.NodeExpandVolumeResponse, error) {
-	return &csi.NodeExpandVolumeResponse{}, status.Error(codes.Unimplemented, "NodeExpandVolume is not implemented")
+
+func (ns *nodeServer) NodeGetId(ctx context.Context,  req *csi.NodeGetIdRequest) (*csi.NodeGetIdResponse, error){
+	conn := os.Getenv("NODE_ID")
+	if conn == "" {
+		return nil, fmt.Errorf("can't get NodeId")
+	}
+	return &csi.NodeGetIdResponse{NodeId:conn},nil
 }
 
 func checkMount(targetPath string) (bool, error) {

@@ -13,6 +13,7 @@ import (
 
 const (
 	metadataName = ".metadata.json"
+	// bucket root path
 	fsPrefix     = "csi-fs"
 )
 

@@ -17,7 +17,7 @@ limitations under the License.
 package s3
 
 import (
-	"github.com/container-storage-interface/spec/lib/go/csi"
+	csi "github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 
 	csicommon "github.com/kubernetes-csi/drivers/pkg/csi-common"
@@ -41,6 +41,7 @@ type s3Volume struct {
 
 var (
 	vendorVersion = "v1.1.1"
+	// equal to StorageClass.provisioner
 	driverName    = "ch.ctrox.csi.s3-driver"
 )
 
@@ -93,3 +94,4 @@ func (s3 *s3) Run() {
 	s.Start(s3.endpoint, s3.ids, s3.cs, s3.ns)
 	s.Wait()
 }
+
