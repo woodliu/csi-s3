@@ -3,12 +3,11 @@ module github.com/woodliu/csi-s3
 require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/aws/aws-sdk-go v1.29.30 // indirect
-	github.com/container-storage-interface/spec v1.2.0 // indirect
 	github.com/evanphx/json-patch v4.5.0+incompatible // indirect
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/groupcache v0.0.0-20190129154638-5b532d6fd5ef // indirect
-	github.com/golang/protobuf v1.3.5 // indirect
+	github.com/golang/protobuf v1.3.5
 	github.com/googleapis/gnostic v0.2.0 // indirect
 	github.com/jacobsa/fuse v0.0.0-20200323075136-ffe3eb03daf9 // indirect
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a // indirect
