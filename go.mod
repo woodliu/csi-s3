@@ -18,8 +18,10 @@ require (
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/jacobsa/fuse v0.0.0-20200323075136-ffe3eb03daf9 // indirect
+	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a // indirect
 	github.com/kahing/go-xattr v1.1.1 // indirect
-	github.com/kahing/goofys v0.23.1
+	github.com/kahing/goofys v0.20.0
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/kubernetes-csi/csi-lib-utils v0.3.0 // indirect
 	github.com/kubernetes-csi/csi-test v0.3.5
 	github.com/kubernetes-csi/drivers v0.4.2
@@ -29,6 +31,7 @@ require (
 	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.7.0
 	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/sevlyar/go-daemon v0.1.5 // indirect
 	github.com/shirou/gopsutil v2.20.2+incompatible // indirect
 	github.com/sirupsen/logrus v1.5.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
