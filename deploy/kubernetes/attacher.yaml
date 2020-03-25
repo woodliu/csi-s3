@@ -69,7 +69,7 @@ spec:
       serviceAccount: csi-attacher-sa
       containers:
         - name: csi-attacher
-          image: quay.io/k8scsi/csi-attacher:v1.1.0
+          image: docker-local.art.ocp.csvw.com/openshift3/csi-attacher:v0.4.2
           args:
             - "--v=4"
             - "--csi-address=$(ADDRESS)"
