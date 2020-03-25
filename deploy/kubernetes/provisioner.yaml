@@ -68,7 +68,7 @@ spec:
       serviceAccount: csi-provisioner-sa
       containers:
         - name: csi-provisioner
-          image: docker-local.art.ocp.csvw.com/openshift3/csi-provisioner:v0.4.2
+          image: quay.io/k8scsi/csi-provisioner:v0.4.2
           args:
             - "--provisioner=ch.ctrox.csi.s3-driver"
             - "--csi-address=$(ADDRESS)"
@@ -81,7 +81,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/kubelet/plugins/ch.ctrox.csi.s3-driver
         - name: csi-s3
-          image: docker-local.art.ocp.csvw.com/openshift3/csi-s3:v0.3.0
+          image: quay.io/woodliu/csi-s3:v0.3.0
           args:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(NODE_ID)"

@@ -69,7 +69,12 @@ spec:
       serviceAccount: csi-attacher-sa
       containers:
         - name: csi-attacher
-          image: docker-local.art.ocp.csvw.com/openshift3/csi-attacher:v0.4.2
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          image: quay.io/k8scsi/csi-attacher:v0.4.2
           args:
             - "--v=4"
             - "--csi-address=$(ADDRESS)"

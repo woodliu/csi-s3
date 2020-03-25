@@ -56,7 +56,12 @@ spec:
       hostNetwork: true
       containers:
         - name: driver-registrar
-          image: docker-local.art.ocp.csvw.com/openshift3/driver-node-registrar:v0.4.2
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          image: quay.io/k8scsi/driver-registrar:v0.4.2
           args:
             - "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)"
             - "--v=4"
@@ -81,7 +86,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: docker-local.art.ocp.csvw.com/openshift3/csi-s3:v0.3.0
+          image: quay.io/woodliu/csi-s3:v0.3.0
           args:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(NODE_ID)"
@@ -113,7 +118,7 @@ spec:
             type: DirectoryOrCreate
         - name: pods-mount-dir
           hostPath:
-            path: /var/lib/kubelet/pods
+            path: /var/lib/origin/openshift.local.volumes/pods/
             type: Directory
         - name: fuse-device
           hostPath:
