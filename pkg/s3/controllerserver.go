@@ -60,7 +60,6 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 	mounter := params[mounterTypeKey]
 	*/
 	glog.V(4).Infof("Got a request to create volume %s", volumeID)
-	glog.V(4).Infof("Got a request to create AccessKeyID %s SecretAccessKey %s Endpoint %s", req.ControllerCreateSecrets["accessKeyID"], req.ControllerCreateSecrets["secretAccessKey"], req.ControllerCreateSecrets["endpoint"])
 
 	// Changed:use hw SDK
 	obsClient, err := newObsClientFromSecrets(req.GetControllerCreateSecrets())
@@ -104,32 +103,6 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 		}
 	}
 
-
-	/* Replace original code
-	exists, err := s3.bucketExists(volumeID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check if bucket %s exists: %v", volumeID, err)
-	}
-	if exists {
-		var b *bucket
-		b, err = s3.getBucket(volumeID)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get bucket metadata of bucket %s: %v", volumeID, err)
-		}
-		// Check if volume capacity requested is bigger than the already existing capacity
-		if capacityBytes > b.CapacityBytes {
-			return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("Volume with the same name: %s but with smaller size already exist", volumeID))
-		}
-	} else {
-		if err = s3.createBucket(volumeID); err != nil {
-			return nil, fmt.Errorf("failed to create volume %s: %v", volumeID, err)
-		}
-		if err = s3.createPrefix(volumeID, fsPrefix); err != nil {
-			return nil, fmt.Errorf("failed to create prefix %s: %v", fsPrefix, err)
-		}
-	}
-	*/
-
 	// Set capacity
 	input := &obs.SetBucketQuotaInput{}
 	input.Bucket = volumeID
@@ -140,18 +113,6 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 		return nil, fmt.Errorf("Error setting bucket capacityBytes: %v, Code:%s, Message:%s", err, obsError.Code,obsError.Message)
 	}
 
-	//TODO：need process mounter
-	/*
-	b := &bucket{
-		Name:          volumeID,
-		Mounter:       mounter,
-		CapacityBytes: capacityBytes,
-		FSPath:        fsPrefix,
-	}
-	if err := s3.setBucket(b); err != nil {
-		return nil, fmt.Errorf("Error setting bucket metadata: %v", err)
-	}
-*/
 	glog.V(4).Infof("create volume %s", volumeID)
 	s3Vol := s3Volume{}
 	s3Vol.VolName = volumeID
@@ -179,12 +140,6 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 	}
 	glog.V(4).Infof("Deleting volume %s", volumeID)
 
-	/*
-	s3, err := newS3ClientFromSecrets(req.GetControllerDeleteSecrets())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
-	}
-    */
 	// Changed:use hw SDK
 	obsClient, err := newObsClientFromSecrets(req.GetControllerDeleteSecrets())
 	if err != nil {
@@ -213,25 +168,6 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 			return nil, err
 		}
 	}
-
-	/*
-	s3, err := newS3ClientFromSecrets(req.GetSecrets())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
-	}
-	exists, err := s3.bucketExists(volumeID)
-	if err != nil {
-		return nil, err
-	}
-	if exists {
-		if err := s3.removeBucket(volumeID); err != nil {
-			glog.V(3).Infof("Failed to remove volume %s: %v", volumeID, err)
-			return nil, err
-		}
-	} else {
-		glog.V(5).Infof("Bucket %s does not exist, ignoring request", volumeID)
-	}
-	*/
 
 	return &csi.DeleteVolumeResponse{}, nil
 }

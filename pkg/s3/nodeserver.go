@@ -76,13 +76,6 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	glog.V(4).Infof("target %v\ndevice %v\nreadonly %v\nvolumeId %v\nattributes %v\nmountflags %v\n",
 		targetPath, deviceID, readOnly, volumeID, attrib, mountFlags)
 
-	/*
-	s3, err := newS3ClientFromSecrets(req.GetNodePublishSecrets())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
-	}
-	*/
-
     secrets := req.GetNodePublishSecrets()
 
 	// We just use s3fsMounterType
@@ -96,13 +89,6 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
     cfg.SecretAccessKey = secrets["secretAccessKey"]
     cfg.Endpoint = secrets["endpoint"]
     cfg.Mounter = s3fsMounterType
-
-	/*
-	b, err := s3.getBucket(volumeID)
-	if err != nil {
-		return nil, err
-	}
-*/
 
 	mounter, err := newMounter(&bucketCommon, &cfg)
 	if err != nil {
@@ -166,12 +152,6 @@ func (ns *nodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	bucketCommon.Name = volumeID
 	bucketCommon.FSPath = fsPrefix
 	bucketCommon.Mounter = s3fsMounterType
-	/*
-	b, err := s3.getBucket(volumeID)
-	if err != nil {
-		return nil, err
-	}
-	*/
 
 	secrets := req.GetNodeStageSecrets()
 	cfg := Config{}
