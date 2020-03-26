@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/woodliu/csi-s3/pkg/hw-obs"
 	"io"
 	"net/url"
 
@@ -60,6 +61,11 @@ func newS3ClientFromSecrets(secrets map[string]string) (*s3Client, error) {
 		Mounter: "",
 	})
 }
+
+func newObsClientFromSecrets(secrets map[string]string) (*obs.ObsClient, error) {
+	return obs.New(secrets["accessKeyID"], secrets["secretAccessKey"], secrets["endpoint"])
+}
+
 
 func (client *s3Client) bucketExists(bucketName string) (bool, error) {
 	return client.minio.BucketExists(bucketName)

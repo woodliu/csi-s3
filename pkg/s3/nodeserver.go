@@ -76,16 +76,26 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	glog.V(4).Infof("target %v\ndevice %v\nreadonly %v\nvolumeId %v\nattributes %v\nmountflags %v\n",
 		targetPath, deviceID, readOnly, volumeID, attrib, mountFlags)
 
+	/*
 	s3, err := newS3ClientFromSecrets(req.GetNodePublishSecrets())
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
 	}
+	*/
+
+    secrets := req.GetNodePublishSecrets()
 
 	// We just use s3fsMounterType
-	bucketCommon := bucket{}
-	bucketCommon.Name = volumeID
-	bucketCommon.FSPath = fsPrefix
-	bucketCommon.Mounter = s3fsMounterType
+    bucketCommon := bucket{}
+    bucketCommon.Name = volumeID
+    bucketCommon.FSPath = fsPrefix
+    bucketCommon.Mounter = s3fsMounterType
+
+    cfg := Config{}
+    cfg.AccessKeyID = secrets["accessKeyID"]
+    cfg.SecretAccessKey = secrets["secretAccessKey"]
+    cfg.Endpoint = secrets["endpoint"]
+    cfg.Mounter = s3fsMounterType
 
 	/*
 	b, err := s3.getBucket(volumeID)
@@ -94,7 +104,7 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	}
 */
 
-	mounter, err := newMounter(&bucketCommon, s3.cfg)
+	mounter, err := newMounter(&bucketCommon, &cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -151,10 +161,6 @@ func (ns *nodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	if !notMnt {
 		return &csi.NodeStageVolumeResponse{}, nil
 	}
-	s3, err := newS3ClientFromSecrets(req.GetNodeStageSecrets())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
-	}
 
 	bucketCommon := bucket{}
 	bucketCommon.Name = volumeID
@@ -167,7 +173,14 @@ func (ns *nodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	}
 	*/
 
-	mounter, err := newMounter(&bucketCommon, s3.cfg)
+	secrets := req.GetNodeStageSecrets()
+	cfg := Config{}
+	cfg.AccessKeyID = secrets["accessKeyID"]
+	cfg.SecretAccessKey = secrets["secretAccessKey"]
+	cfg.Endpoint = secrets["endpoint"]
+	cfg.Mounter = s3fsMounterType
+
+	mounter, err := newMounter(&bucketCommon, &cfg)
 	if err != nil {
 		return nil, err
 	}

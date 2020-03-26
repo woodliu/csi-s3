@@ -60,14 +60,13 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 	mounter := params[mounterTypeKey]
 	*/
 	glog.V(4).Infof("Got a request to create volume %s", volumeID)
-
-	s3, err := newS3ClientFromSecrets(req.GetControllerCreateSecrets())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
-	}
+	glog.V(4).Infof("Got a request to create AccessKeyID %s SecretAccessKey %s Endpoint %s", req.ControllerCreateSecrets["accessKeyID"], req.ControllerCreateSecrets["secretAccessKey"], req.ControllerCreateSecrets["endpoint"])
 
 	// Changed:use hw SDK
-	var obsClient, _ = obs.New(s3.cfg.AccessKeyID, s3.cfg.SecretAccessKey, s3.cfg.Endpoint)
+	obsClient, err := newObsClientFromSecrets(req.GetControllerCreateSecrets())
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize Obs client: %s", err)
+	}
 
 	_, err = obsClient.HeadBucket(volumeID)
 	if err == nil {
@@ -180,12 +179,18 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 	}
 	glog.V(4).Infof("Deleting volume %s", volumeID)
 
+	/*
 	s3, err := newS3ClientFromSecrets(req.GetControllerDeleteSecrets())
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize S3 client: %s", err)
 	}
+    */
+	// Changed:use hw SDK
+	obsClient, err := newObsClientFromSecrets(req.GetControllerDeleteSecrets())
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize Obs client: %s", err)
+	}
 
-	var obsClient, _ = obs.New(s3.cfg.AccessKeyID, s3.cfg.SecretAccessKey, s3.cfg.Endpoint)
 	_, err = obsClient.HeadBucket(volumeID)
 	if obsError, ok := err.(obs.ObsError); ok {
 		if obsError.StatusCode == 404 {
@@ -197,7 +202,7 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 		}
 	}else {
 		// bucket exist
-		if err := emptyObsBucket(s3, volumeID); err != nil {
+		if err := emptyObsBucket(obsClient, volumeID); err != nil {
 			glog.V(3).Infof("Failed to remove volume %s: %v", volumeID, err)
 			return nil, err
 		}
@@ -295,10 +300,9 @@ func sanitizeVolumeID(volumeID string) string {
 	return volumeID
 }
 
-func emptyObsBucket(s3 *s3Client, volumeId string) error{
+func emptyObsBucket(obsClient *obs.ObsClient, volumeId string) error{
 
 	removeAllFlag := true
-	var obsClient, _ = obs.New(s3.cfg.AccessKeyID, s3.cfg.SecretAccessKey, s3.cfg.Endpoint)
 
 	input := &obs.ListObjectsInput{}
 	input.Bucket = volumeId
