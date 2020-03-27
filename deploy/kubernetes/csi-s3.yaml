@@ -103,7 +103,7 @@ spec:
             - name: plugin-dir
               mountPath: /csi
             - name: pods-mount-dir
-              mountPath: /var/lib/kubelet/pods
+              mountPath: /var/lib/origin/openshift.local.volumes/pods/
               mountPropagation: "Bidirectional"
             - name: fuse-device
               mountPath: /dev/fuse
